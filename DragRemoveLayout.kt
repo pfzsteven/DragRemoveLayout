@@ -1,3 +1,16 @@
+package com.enenworld.android.view
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.View
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.Interpolator
+import android.widget.FrameLayout
+import androidx.core.view.ViewCompat
+import com.enenworld.enenworld.R
+
+
 class DragRemoveLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
     private lateinit var deleteButton: View
@@ -71,9 +84,7 @@ class DragRemoveLayout(context: Context, attrs: AttributeSet?) : FrameLayout(con
     }
 
     private fun playAnim() {
-        val currentTx = contentView.x.toInt()
-        val middleLine = swipeMax.shr(1)
-        if (currentTx < -middleLine) {
+        if (isOpen()) {
             // 展开
             ViewCompat.animate(contentView).translationX(-swipeMax.toFloat())
                 .setInterpolator(interpolator).start()
@@ -81,6 +92,14 @@ class DragRemoveLayout(context: Context, attrs: AttributeSet?) : FrameLayout(con
             // 收起
             ViewCompat.animate(contentView).translationX(0f).setInterpolator(interpolator).start()
         }
+        isSwiping = false
+    }
+
+    fun isOpen(): Boolean {
+        if (swipeMax == 0) return false
+        val currentTx = contentView.translationX.toInt()
+        val middleLine = swipeMax.shr(1)
+        return currentTx < -middleLine
     }
 
 }
